@@ -3167,6 +3167,13 @@ do
 			end
 			return found
 		end
+		
+		local function truncateString(message)
+			if type(message) == "string" and #message > 16384 then
+				return message:sub(0, 16381) .. "..."
+			end
+			return message
+		end
 	
 		local outputMessageSyncLocal;
 		if permissions.MayViewClientLog then
@@ -3179,7 +3186,7 @@ do
 					for i = 1, #history do
 						local msg = history[i]
 						local message = {
-							Message = msg.message or "[DevConsole Error 1]";
+							Message = truncateString(msg.message) or "[DevConsole Error 1]";
 							Time = ConvertTimeStamp(msg.timestamp);
 							Type = msg.messageType.Value;
 						}
@@ -3191,7 +3198,7 @@ do
 				
 				LogService.MessageOut:connect(function(text, messageType)
 					local message = {
-						Message = text or "[DevConsole Error 2]";
+						Message = truncateString(text) or "[DevConsole Error 2]";
 						Time = ConvertTimeStamp(os_time());
 						Type = messageType.Value;
 					}
